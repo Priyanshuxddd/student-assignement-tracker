@@ -1,15 +1,11 @@
 import express from "express"
-import prisma from "./prisma.js";
+import assignementRoutes from "./routes/assignmentRoutes.js"
 
 
 const app = express()
 app.use(express.json())
 
-
-app.get('/test-db', async(req,res) => {
-    const users= await prisma.user.findMany()
-    res.status(200).json(users)
-})
+app.use("/api/assignments", assignementRoutes)
 
 
 app.listen(3000, () => {
