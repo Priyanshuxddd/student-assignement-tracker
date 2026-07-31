@@ -30,3 +30,19 @@ export const createAssignment = async (req: Request , res: Response) => {
     }
 
 }
+
+export const getAssignments = async (req: Request, res: Response) => {
+
+    try {
+        const assignments = await prisma.assignment.findMany()
+        return res.status(200).json({
+            assignments,
+        }) 
+
+        } catch(error){
+        return res.status(500).json({
+                message: "Couldntfetch Assignments"
+            })
+    }
+    
+}
