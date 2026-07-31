@@ -46,3 +46,37 @@ export const getAssignments = async (req: Request, res: Response) => {
     }
     
 }
+
+export const getAssignmentById = async (req:Request, res: Response) => {
+        try {
+
+            const id = Number(req.params.id)
+
+            if(isNaN(id)){
+                return res.status(400).json({
+                    message: "Invalid Assignment parameter passed!"
+                })
+            }
+
+            const assignment = await prisma.assignment.findUnique({
+                where: {
+                    id
+                }  
+            }) 
+
+            if(!assignment) {
+                return res.status(404).json({
+                    message: "Assignment with this id doesnt exist"
+                })
+
+            } 
+                return res.status(200).json({
+                    assignment
+                })
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json({
+                message: "Internal Server Error"
+            })
+        }
+}
