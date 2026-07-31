@@ -117,3 +117,29 @@ export const editAssignment = async (req: Request, res: Response) => {
             })
         }
 }
+
+export const deleteAssignment = async (req:Request, res: Response) => {
+  
+    try {
+        const id = Number(req.params.id)
+
+        if(isNaN(id)){
+            return res.status(400).json({
+                message: "Type Valid Assignment Id"
+            })
+        }
+
+         await prisma.assignment.delete({
+            where:{id}
+        }) 
+        return res.status(200).json({
+            message: "Assignment Succesfully Deleted"
+        })
+    } catch (error){
+        console.log(error);
+        return res.status(500).json({
+            message: "Internal Server Error"
+        })
+    }
+    
+}
