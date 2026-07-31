@@ -13,10 +13,10 @@ model User {
     email     String  @unique
     password  String
     createdAt DateTime @default(now())
-    assignements  Assignement[]
+    assignments  Assignment[]
 }
 
-model Assignement {
+model Assignment {
   id          Int @id @default(autoincrement())
   title       String
   description String?

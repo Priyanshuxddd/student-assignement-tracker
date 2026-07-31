@@ -9,7 +9,7 @@ export const createAssignment = async (req: Request , res: Response) => {
     try {   
         const {title, description , dueDate , userId} = req.body;
             
-        const assignment = await prisma.assignement.create({
+        const assignment = await prisma.assignment.create({
             data: {
                 title,
                 description,
