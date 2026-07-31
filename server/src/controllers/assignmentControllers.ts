@@ -1,4 +1,3 @@
-
 import prisma from "../prisma.js";
 import type { Request, Response } from "express";
 
@@ -77,6 +76,44 @@ export const getAssignmentById = async (req:Request, res: Response) => {
             console.log(error);
             return res.status(500).json({
                 message: "Internal Server Error"
+            })
+        }
+}
+
+export const editAssignment = async (req: Request, res: Response) => {
+        try {
+            const id = Number(req.params.id)
+
+            if(isNaN(id)){
+                return res.status(400).json({
+                    message: "Type Valid Assignment id"
+                })
+            }
+
+            // we had to did all of this bc prisma wasnt allowing the date to be a String it could be 
+            // const data = req.body simply if it werent for date
+            const data = {
+                ...req.body,
+                dueDate: req.body.dueDate
+                  ? new Date(req.body.dueDate)
+                  : undefined,
+              };
+
+            
+            const assignment = await prisma.assignment.update({
+                where: {id},
+                data 
+            });
+
+            return res.status(200).json({
+                message:"Assignment Updated Sucessfully",
+                assignment
+            })
+
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json({
+                message:"Internal Server Error"
             })
         }
 }
