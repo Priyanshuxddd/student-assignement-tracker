@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react"
 import api from "../services/api"
+import AssignmentCard from "../components/AssignmentCard" 
+import "./Home.css"
 
 interface Assignment {
 
@@ -13,7 +15,7 @@ interface Assignment {
 
 function Home(){
 
-const [assignments, setAssignments] = useState<Assignment[]>([])
+const [assignments, setAssignments] = useState<Assignment []>([])
 
 async function fetchAssignments(){
 
@@ -31,20 +33,29 @@ useEffect(()=> {
 },[]);
 
 return <div>
+    
+<main className="homeTop">
 
-        <h1>STUDENT ASSIGNMENT</h1>
-    {assignments.map((assignment: Assignment) => (
-        <div key={assignment.id}>
-           
-            <h2>{assignment.title}</h2>
-            <h2>{assignment.description ?? "No Description"}</h2>
-            <h2>{new Date(assignment.dueDate).toLocaleDateString()}</h2>
-            <h2>{assignment.completed ? "Completed" : "Pending"}</h2>
-        </div>
-    ))}
+    <h1>STUDENT ASSIGNMENT TRACKER</h1>
+
+    <p>All Your Assignment Gathered In One Place</p>
+
+    <button className="button">Add Assignment</button>
+
+            {assignments.map((assignment) => (
+                <AssignmentCard 
+                    key = {assignment.id}
+                assignment = {assignment}
+            />
+        ))}
+
+
+</main>
+
 
    
 </div>
 }
+
 
 export default Home;

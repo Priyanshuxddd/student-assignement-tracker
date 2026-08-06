@@ -1,0 +1,133 @@
+/* Home.css */
+
+:root {
+    --bg: #0f1115;
+    --surface: #1a1d24;
+    --surface-hover: #21252e;
+    --border: #2a2e38;
+    --text-primary: #f2f3f5;
+    --text-secondary: #9aa0ab;
+    --accent: #6c5ce7;
+    --accent-hover: #7d6ef0;
+    --pending: #f5a623;
+    --completed: #2ecc71;
+    --danger: #e74c3c;
+    --radius: 12px;
+  }
+  
+  * {
+    box-sizing: border-box;
+  }
+  
+  body {
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: "Inter", system-ui, -apple-system, sans-serif;
+    margin: 0;
+  }
+  
+  .homeTop {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 48px 24px 32px;
+    text-align: center;
+  }
+  
+  .homeTop h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+  
+  .homeTop p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 24px;
+  }
+  
+  .button {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.1s ease;
+  }
+  
+  .button:hover {
+    background: var(--accent-hover);
+    transform: translateY(-1px);
+  }
+  
+  .button:active {
+    transform: translateY(0);
+  }
+  
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    max-width: 480px;
+    margin: 24px auto 0;
+    text-align: left;
+    transition: background 0.2s ease, border-color 0.2s ease;
+  }
+  
+  .card:hover {
+    background: var(--surface-hover);
+    border-color: var(--accent);
+  }
+  
+  .card h2 {
+    font-size: 1.1rem;
+    margin: 0 0 8px;
+  }
+  
+  .card p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin: 4px 0;
+  }
+  
+  .status {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: rgba(245, 166, 35, 0.15);
+    color: var(--pending);
+  }
+  
+  .status.completed {
+    background: rgba(46, 204, 113, 0.15);
+    color: var(--completed);
+  }
+  
+  .actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+  }
+  
+  .actions button {
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease;
+  }
+  
+  .actions button:hover {
+    border-color: currentColor;
+    background: rgba(255, 255, 255, 0.03);
+  }
