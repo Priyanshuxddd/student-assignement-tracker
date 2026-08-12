@@ -1,3 +1,4 @@
+
 interface Assignment {
     id: number;
     title: string;
@@ -8,11 +9,12 @@ interface Assignment {
   
   interface AssignmentCardProps {
     assignment: Assignment;
+    onDelete : (id:number) => void; //it returns nothinggggg
   }
 
 
 
-  const AssignmentCard  = ( {assignment } : AssignmentCardProps) => {
+  const AssignmentCard  = ( {assignment, onDelete } : AssignmentCardProps) => {
 
     console.log(assignment);
     
@@ -30,7 +32,7 @@ interface Assignment {
 
     <div className="actions">
         <button style={{color:"yellow"}}>Edit</button>
-        <button style={{color:"red"}}>Delete</button>
+        <button onClick={()=> onDelete(assignment.id)} style={{color:"red"}}>Delete</button>
     </div>
 
     </div>

@@ -32,6 +32,12 @@ useEffect(()=> {
     fetchAssignments()
 },[]);
 
+
+async function handleDelete(id: number) {
+    setAssignments(assignments.filter(x=> x.id != id))
+    
+}
+
 return <div>
     
 <main className="homeTop">
@@ -46,14 +52,13 @@ return <div>
                 <AssignmentCard 
                     key = {assignment.id}
                 assignment = {assignment}
+                onDelete = {handleDelete}
             />
         ))}
 
 
 </main>
 
-
-   
 </div>
 }
 
