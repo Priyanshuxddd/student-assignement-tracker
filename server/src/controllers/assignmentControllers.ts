@@ -30,13 +30,13 @@ export const createAssignment = async (req: Request , res: Response) => {
 
 }
 
+
 export const getAssignments = async (req: Request, res: Response) => {
 
     try {
-           console.log(     console.time("DB"));
        
         const assignments = await prisma.assignment.findMany()
-        console.log(     console.timeEnd("DB"));
+        console.timeEnd("assignments")
         return res.status(200).json({
             assignments,
         }) 

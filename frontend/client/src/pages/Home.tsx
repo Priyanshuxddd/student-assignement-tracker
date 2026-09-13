@@ -17,11 +17,21 @@ function Home(){
 
 const [assignments, setAssignments] = useState<Assignment []>([])
 
+const [title, setTitle] = useState("")
+const [description, setDescription] = useState("")
+const [dueDate, setDueDate] = useState("")
+
+const [showForm, setShowForm] = useState(false)
+
 async function fetchAssignments(){
 
     try {
         const response =  await api.get("/assignments")
-    setAssignments(response.data.assignments)
+        setAssignments(response.data.assignments)
+
+        console.log(response.data)
+console.log(response.data.assignment)
+    
     } catch (error) {
         return console.log(error);
         
@@ -34,8 +44,12 @@ useEffect(()=> {
 
 
 async function handleDelete(id: number) {
-    setAssignments(assignments.filter(x=> x.id != id))
-    
+    try {
+        await api.delete(`/assignments/${id}`)
+        setAssignments((current) => current.filter((assignment) => assignment.id !== id))
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 return <div>
@@ -46,21 +60,75 @@ return <div>
 
     <p>All Your Assignment Gathered In One Place</p>
 
-    <button className="button">Add Assignment</button>
+    <button className="button" onClick={()=> setShowForm(true)}>Add Assignment</button>
+    {showForm && (
+    <div>
+        <h2>Add Assignment</h2>
 
+        <input
+            type="text"
+            placeholder="Assignment title"
+            value={title}
+            onChange={(e)=> setTitle(e.target.value)}
+        />
+
+        <textarea
+            placeholder="Description"
+            value={description}
+            onChange={(e)=> setDescription(e.target.value)}
+        />
+
+        <input
+            type="date"
+            value={dueDate}
+            onChange={(e)=> setDueDate(e.target.value)}
+        />
+
+        <button onClick={handleSubmit}>Create Assignment</button>
+
+        <button onClick={() => setShowForm(false)}>
+            Close
+        </button>
+    </div>
+)}
             {assignments.map((assignment) => (
                 <AssignmentCard 
                     key = {assignment.id}
                 assignment = {assignment}
                 onDelete = {handleDelete}
+                
             />
         ))}
 
 
-</main>
+        
 
+</main>
 </div>
+
+async function handleSubmit(){
+    try{
+       const response =  await api.post("/assignments",{
+        title:title,
+        description: description,
+        dueDate: dueDate,
+        userId: 1
+       })
+       console.log(response);
+
+       setAssignments([
+        ...assignments,
+        response.data.assignment
+    ])
+       
+    }  catch (error){
+            console.log(error);
+            
+    }
 }
+
+}
+
 
 
 export default Home;
