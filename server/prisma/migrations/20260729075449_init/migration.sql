@@ -10,7 +10,7 @@ CREATE TABLE "User" (
 );
 
 -- CreateTable
-CREATE TABLE "Assignement" (
+CREATE TABLE "Assignment" (
     "id" SERIAL NOT NULL,
     "title" TEXT NOT NULL,
     "description" TEXT,
@@ -24,7 +24,7 @@ CREATE TABLE "Assignement" (
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Assignement_id_key" ON "Assignement"("id");
+CREATE UNIQUE INDEX "Assignment_id_key" ON "Assignment"("id");
 
 -- AddForeignKey
-ALTER TABLE "Assignement" ADD CONSTRAINT "Assignement_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Assignment" ADD CONSTRAINT "Assignment_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

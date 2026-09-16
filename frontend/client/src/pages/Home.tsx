@@ -1,3 +1,4 @@
+import axios from "axios"
 import { useEffect, useState } from "react"
 import api from "../services/api"
 import AssignmentCard from "../components/AssignmentCard" 
@@ -16,6 +17,8 @@ interface Assignment {
 function Home(){
 
 const [assignments, setAssignments] = useState<Assignment []>([])
+const [isLoading, setIsLoading] = useState(true)
+const [fetchError, setFetchError] = useState("")
 
 const [title, setTitle] = useState("")
 const [description, setDescription] = useState("")
@@ -24,17 +27,20 @@ const [dueDate, setDueDate] = useState("")
 const [showForm, setShowForm] = useState(false)
 
 async function fetchAssignments(){
-
     try {
+        setIsLoading(true)
+        setFetchError("")
         const response =  await api.get("/assignments")
         setAssignments(response.data.assignments)
-
-        console.log(response.data)
-console.log(response.data.assignment)
-    
     } catch (error) {
-        return console.log(error);
-        
+        console.error("Could not fetch assignments", error)
+        setFetchError(
+            axios.isAxiosError(error) && error.response?.data?.message
+                ? error.response.data.message
+                : "Could not load assignments. Please check that the server is running and try again."
+        )
+    } finally {
+        setIsLoading(false)
     }
    
 }
@@ -61,6 +67,13 @@ return <div>
     <p>All Your Assignment Gathered In One Place</p>
 
     <button className="button" onClick={()=> setShowForm(true)}>Add Assignment</button>
+    {isLoading && <p>Loading assignments…</p>}
+    {fetchError && (
+        <div role="alert">
+            <p>{fetchError}</p>
+            <button onClick={fetchAssignments}>Try again</button>
+        </div>
+    )}
     {showForm && (
     <div>
         <h2>Add Assignment</h2>
@@ -129,6 +142,9 @@ async function handleSubmit(){
 
 }
 
+async function handleEdit(){
+
+}
 
 
 export default Home;

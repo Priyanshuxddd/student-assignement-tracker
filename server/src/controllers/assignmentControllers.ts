@@ -1,6 +1,12 @@
 import prisma from "../prisma.js";
 import type { Request, Response } from "express";
 
+function isDatabaseConnectionError(error: unknown) {
+    if (!(error instanceof Error)) return false
+
+    return /connection|connect|pool|timeout|ECONN|P1001|P1002/i.test(error.message)
+}
+
 export const createAssignment = async (req: Request , res: Response) => {
         console.log("Reached controller");
         
@@ -36,15 +42,17 @@ export const getAssignments = async (req: Request, res: Response) => {
     try {
        
         const assignments = await prisma.assignment.findMany()
-        console.timeEnd("assignments")
         return res.status(200).json({
             assignments,
         }) 
 
         } catch(error){
-        return res.status(500).json({
-                message: "Couldntfetch Assignments"
-            })
+        console.error("getAssignments failed", error)
+        return res.status(isDatabaseConnectionError(error) ? 503 : 500).json({
+            message: isDatabaseConnectionError(error)
+                ? "Database is temporarily unavailable. Please try again."
+                : "Could not fetch assignments"
+        })
     }
     
 }

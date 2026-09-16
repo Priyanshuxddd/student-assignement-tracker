@@ -17,8 +17,10 @@ const pool = new Pool({
   max: 5,
   keepAlive: true,
   keepAliveInitialDelayMillis: 10_000,
-  connectionTimeoutMillis: 8_000,
-  idleTimeoutMillis: 10_000,
+  // pg otherwise closes idle connections after 10 seconds. Keeping a small pool
+  // warm avoids reconnecting to the remote database for ordinary page refreshes.
+  idleTimeoutMillis: 5 * 60_000,
+  connectionTimeoutMillis: 10_000,
 });
 
 pool.on("error", (error) => {
@@ -35,5 +37,14 @@ const prisma = new PrismaClient({
     },
   }),
 });
+
+export async function warmupDb() {
+  await prisma.$queryRaw`SELECT 1`;
+}
+
+export async function closeDb() {
+  await prisma.$disconnect();
+  await pool.end();
+}
 
 export default prisma;
