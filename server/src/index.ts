@@ -10,7 +10,7 @@ app.use(cors())
 
 app.use("/api/assignments", assignmentRoutes)
 
-const port = 3000
+const port = Number(process.env.PORT) || 3000
 let server: ReturnType<typeof app.listen> | undefined
 let databaseRetryTimer: ReturnType<typeof setTimeout> | undefined
 let databaseConnected = false
