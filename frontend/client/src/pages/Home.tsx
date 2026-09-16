@@ -25,6 +25,7 @@ const [description, setDescription] = useState("")
 const [dueDate, setDueDate] = useState("")
 
 const [showForm, setShowForm] = useState(false)
+const [editingAssignment, setEditingAssignment] = useState<Assignment | null>(null)
 
 async function fetchAssignments(){
     try {
@@ -48,12 +49,52 @@ useEffect(()=> {
     fetchAssignments()
 },[]);
 
-
 async function handleDelete(id: number) {
     try {
         await api.delete(`/assignments/${id}`)
         setAssignments((current) => current.filter((assignment) => assignment.id !== id))
     } catch (error) {
+        console.log(error)
+    }
+}
+
+function handleEdit(assignment: Assignment){
+    setEditingAssignment(assignment)
+    setTitle(assignment.title)
+    setDescription(assignment.description || "")
+    setDueDate(assignment.dueDate.slice(0, 10))
+    setShowForm(true)
+}
+
+async function handleSubmit(){
+    try{
+        if(editingAssignment){
+            const response = await api.put(`/assignments/${editingAssignment.id}`,{
+                title,
+                description,
+                dueDate
+            })
+
+            setAssignments(assignments.map((assignment) =>
+                assignment.id === editingAssignment.id ? response.data.assignment : assignment
+            ))
+        } else {
+            const response =  await api.post("/assignments",{
+                title:title,
+                description: description,
+                dueDate: dueDate,
+                userId: 1
+            })
+
+            setAssignments([
+                ...assignments,
+                response.data.assignment
+            ])
+        }
+
+        setShowForm(false)
+        setEditingAssignment(null)
+    }  catch (error){
         console.log(error)
     }
 }
@@ -66,7 +107,13 @@ return <div>
 
     <p>All Your Assignment Gathered In One Place</p>
 
-    <button className="button" onClick={()=> setShowForm(true)}>Add Assignment</button>
+    <button className="button" onClick={()=> {
+        setEditingAssignment(null)
+        setTitle("")
+        setDescription("")
+        setDueDate("")
+        setShowForm(true)
+    }}>Add Assignment</button>
     {isLoading && <p>Loading assignments…</p>}
     {fetchError && (
         <div role="alert">
@@ -75,8 +122,9 @@ return <div>
         </div>
     )}
     {showForm && (
-    <div>
-        <h2>Add Assignment</h2>
+    <div className="dialog-backdrop">
+    <div className="assignment-dialog" role="dialog" aria-modal="true" aria-labelledby="dialog-title">
+        <h2 id="dialog-title">{editingAssignment ? "Edit Assignment" : "Add Assignment"}</h2>
 
         <input
             type="text"
@@ -97,11 +145,17 @@ return <div>
             onChange={(e)=> setDueDate(e.target.value)}
         />
 
-        <button onClick={handleSubmit}>Create Assignment</button>
+        <button onClick={handleSubmit}>
+            {editingAssignment ? "Save Changes" : "Create Assignment"}
+        </button>
 
-        <button onClick={() => setShowForm(false)}>
+        <button onClick={() => {
+            setShowForm(false)
+            setEditingAssignment(null)
+        }}>
             Close
         </button>
+    </div>
     </div>
 )}
             {assignments.map((assignment) => (
@@ -109,6 +163,7 @@ return <div>
                     key = {assignment.id}
                 assignment = {assignment}
                 onDelete = {handleDelete}
+                onEdit = {handleEdit}
                 
             />
         ))}
@@ -118,31 +173,6 @@ return <div>
 
 </main>
 </div>
-
-async function handleSubmit(){
-    try{
-       const response =  await api.post("/assignments",{
-        title:title,
-        description: description,
-        dueDate: dueDate,
-        userId: 1
-       })
-       console.log(response);
-
-       setAssignments([
-        ...assignments,
-        response.data.assignment
-    ])
-       
-    }  catch (error){
-            console.log(error);
-            
-    }
-}
-
-}
-
-async function handleEdit(){
 
 }
 

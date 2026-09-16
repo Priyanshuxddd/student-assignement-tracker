@@ -66,6 +66,52 @@
   .button:active {
     transform: translateY(0);
   }
+
+  .dialog-backdrop {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.55);
+  }
+
+  .assignment-dialog {
+    width: 100%;
+    max-width: 420px;
+    padding: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    text-align: left;
+  }
+
+  .assignment-dialog h2 {
+    margin: 0 0 16px;
+    font-size: 1.1rem;
+  }
+
+  .assignment-dialog input,
+  .assignment-dialog textarea {
+    display: block;
+    width: 100%;
+    margin-bottom: 12px;
+    padding: 9px;
+    background: var(--bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+
+  .assignment-dialog textarea {
+    min-height: 80px;
+    resize: vertical;
+  }
+
+  .assignment-dialog button + button {
+    margin-left: 10px;
+  }
   
   .card {
     background: var(--surface);
