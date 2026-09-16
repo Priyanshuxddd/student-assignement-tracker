@@ -9,6 +9,7 @@
     --text-secondary: #9aa0ab;
     --accent: #6c5ce7;
     --accent-hover: #7d6ef0;
+    --accent-soft: rgba(108, 92, 231, 0.14);
     --pending: #f5a623;
     --completed: #2ecc71;
     --danger: #e74c3c;
@@ -169,11 +170,48 @@
     padding: 6px 14px;
     font-size: 0.85rem;
     font-weight: 500;
+    line-height: 1.25;
     cursor: pointer;
     transition: border-color 0.2s ease, background 0.2s ease;
   }
   
   .actions button:hover {
     border-color: currentColor;
-    background: rgba(255, 255, 255, 0.03);
+    transform: translateY(-1px);
+  }
+
+  .actions button:active {
+    transform: translateY(0);
+  }
+
+  .actions button:focus-visible {
+    outline: 2px solid var(--accent-hover);
+    outline-offset: 2px;
+  }
+
+  .edit-button {
+    color: var(--accent-hover);
+    border-color: rgba(108, 92, 231, 0.42) !important;
+    background: var(--accent-soft) !important;
+  }
+
+  .edit-button:hover {
+    color: #fff;
+    background: var(--accent) !important;
+  }
+
+  .delete-button {
+    color: #ff8175;
+    border-color: rgba(231, 76, 60, 0.42) !important;
+    background: rgba(231, 76, 60, 0.1) !important;
+  }
+
+  .delete-button:hover {
+    color: #fff;
+    border-color: var(--danger) !important;
+    background: var(--danger) !important;
+  }
+
+  .delete-button:focus-visible {
+    outline-color: var(--danger);
   }
