@@ -12,20 +12,45 @@ app.use("/api/assignments", assignmentRoutes)
 
 const port = 3000
 let server: ReturnType<typeof app.listen> | undefined
+let databaseRetryTimer: ReturnType<typeof setTimeout> | undefined
+let databaseConnected = false
 
-async function startServer() {
+function errorMessage(error: unknown) {
+    return error instanceof Error ? error.message : String(error)
+}
+
+async function connectDatabase() {
     try {
         await warmupDb()
-        server = app.listen(port, () => {
-            console.log(`Server started on port ${port}`)
-        })
+
+        if (!databaseConnected) {
+            databaseConnected = true
+            console.log("Database connected")
+        }
     } catch (error) {
-        console.error("Could not connect to the database", error);
-        process.exitCode = 1
+        databaseConnected = false
+        console.warn(
+            `Database is unavailable (${errorMessage(error)}). Retrying in 5 seconds.`
+        )
+
+        databaseRetryTimer = setTimeout(() => {
+            void connectDatabase()
+        }, 5_000)
     }
 }
 
+function startServer() {
+    server = app.listen(port, () => {
+        console.log(`Server started on port ${port}`)
+        void connectDatabase()
+    })
+}
+
 async function shutdown() {
+    if (databaseRetryTimer) {
+        clearTimeout(databaseRetryTimer)
+    }
+
     if (!server) {
         await closeDb()
         return
@@ -43,4 +68,4 @@ async function shutdown() {
 process.once("SIGINT", shutdown)
 process.once("SIGTERM", shutdown)
 
-void startServer()
+startServer()
