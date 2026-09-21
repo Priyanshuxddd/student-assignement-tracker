@@ -8,6 +8,15 @@ const app = express()
 app.use(express.json())
 app.use(cors())
 
+// This endpoint is intentionally lightweight so an uptime monitor can verify
+// that the web service is reachable without querying application data.
+app.get("/health", (_req, res) => {
+    res.status(200).json({
+        status: "ok",
+        database: databaseConnected ? "ready" : "connecting",
+    })
+})
+
 app.use("/api/assignments", assignmentRoutes)
 
 const port = Number(process.env.PORT) || 3000

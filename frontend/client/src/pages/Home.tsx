@@ -16,8 +16,16 @@ interface Assignment {
 
 function Home(){
 
-const [assignments, setAssignments] = useState<Assignment []>([])
+const [assignments, setAssignments] = useState<Assignment []>(() => {
+    try {
+        const cached = localStorage.getItem("assignments")
+        return cached ? JSON.parse(cached) : []
+    } catch {
+        return []
+    }
+})
 const [isLoading, setIsLoading] = useState(true)
+const [isWakingServer, setIsWakingServer] = useState(false)
 const [fetchError, setFetchError] = useState("")
 
 const [title, setTitle] = useState("")
@@ -28,11 +36,17 @@ const [showForm, setShowForm] = useState(false)
 const [editingAssignment, setEditingAssignment] = useState<Assignment | null>(null)
 
 async function fetchAssignments(){
+    const wakeupMessageTimer = window.setTimeout(() => {
+        setIsWakingServer(true)
+    }, 2_500)
+
     try {
         setIsLoading(true)
+        setIsWakingServer(false)
         setFetchError("")
         const response =  await api.get("/assignments")
         setAssignments(response.data.assignments)
+        localStorage.setItem("assignments", JSON.stringify(response.data.assignments))
     } catch (error) {
         console.error("Could not fetch assignments", error)
         setFetchError(
@@ -41,7 +55,9 @@ async function fetchAssignments(){
                 : "Could not load assignments. Please check that the server is running and try again."
         )
     } finally {
+        window.clearTimeout(wakeupMessageTimer)
         setIsLoading(false)
+        setIsWakingServer(false)
     }
    
 }
@@ -114,7 +130,7 @@ return <div>
         setDueDate("")
         setShowForm(true)
     }}>Add Assignment</button>
-    {isLoading && <p>Loading assignments…</p>}
+    {isLoading && <p>{isWakingServer ? "The API is waking up. Your assignments will appear shortly…" : "Loading assignments…"}</p>}
     {fetchError && (
         <div role="alert">
             <p>{fetchError}</p>
